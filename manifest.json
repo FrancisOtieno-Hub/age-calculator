@@ -2,8 +2,8 @@
   "name": "Age & Birthday Countdown",
   "short_name": "Age Calculator",
   "description": "Track your age in real time and countdown to your next birthday.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",
@@ -16,3 +16,4 @@
     }
   ]
 }
+
