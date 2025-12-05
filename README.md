@@ -44,13 +44,7 @@ All updated every second.
 - icon.png (minimum 192×192; recommended 512×512)
 - HTTPS hosting (required for PWA)
 
-
-## Adding/Editing Splash Screen
-The splash screen is fully controlled via:
-```html
-<div id="splash"> ... </div>
-
-Fade-out uses:
+## Fade-out uses:
 animation: fadeOut 1s ease forwards;
 animation-delay: 3s;
 
