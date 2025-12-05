@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age & Birthday Countdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .calculator {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    text-align: center;
+    width: 100%;
+    max-width: 450px;
+    transition: transform 0.3s ease;
+  }
+
+  .calculator:hover {
+    transform: translateY(-5px);
+  }
+
+  h1 {
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  }
+
+  input[type="date"] {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    margin-bottom: 25px;
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    transition: background 0.3s;
+  }
+
+  input[type="date"]:focus {
+    background: rgba(255,255,255,0.3);
+  }
+
+  p {
+    font-size: 1rem;
+    margin-top: 20px;
+    line-height: 1.6;
+    color: #f0f0f0;
+  }
+
+  .highlight {
+    color: #ffd700;
+    font-weight: 600;
+  }
+
+  .icon-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 20%;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+
+  @media (max-width: 480px) {
+    .calculator {
+      padding: 30px 25px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    p {
+      font-size: 0.95rem;
+    }
+  }
+
+  
+  /* Splash screen styles */
+  #splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #fff;
+    z-index: 9999;
+    animation: fadeOut 1s ease forwards;
+    animation-delay: 3s; /* time before splash disappears */
+  }
+
+  #splash img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #splash h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  #splash p {
+    font-size: 1.1rem;
+    color: #f0f0f0;
+    opacity: 0.85;
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+</style>
+</head>
+<body>
+<!-- Splash Screen -->
+<div id="splash">
+  <div class="icon-container">
+  <img src="icon.png" alt="App Icon">
+</div>
+  <p>Track your age and countdown to your next birthday</p>
+</div>
+
+<!-- Main App -->
+<div id="app" style="display:none;">
+  <div class="calculator">
+    <h1>Age & Birthday Countdown</h1>
+    <input type="date" id="birthdate" max="">
+    <p id="age"></p>
+    <p id="nextBirthday"></p>
+  </div>
+</div>
+
+<script>
+const birthdateInput = document.getElementById('birthdate');
+const ageOutput = document.getElementById('age');
+const nextBirthdayOutput = document.getElementById('nextBirthday');
+
+// Set max date to today
+birthdateInput.max = new Date().toISOString().split('T')[0];
+
+let timer;
+
+birthdateInput.addEventListener('input', () => {
+  if (timer) clearInterval(timer);
+  updateAge();
+  timer = setInterval(updateAge, 1000);
+});
+
+function updateAge() {
+  const birthdate = new Date(birthdateInput.value);
+  const now = new Date();
+
+  if (!birthdate || birthdate > now) {
+    ageOutput.innerText = '';
+    nextBirthdayOutput.innerText = '';
+    return;
+  }
+
+  // Age calculation
+  let years = now.getFullYear() - birthdate.getFullYear();
+  let months = now.getMonth() - birthdate.getMonth();
+  let days = now.getDate() - birthdate.getDate();
+  let hours = now.getHours() - birthdate.getHours();
+  let minutes = now.getMinutes() - birthdate.getMinutes();
+  let seconds = now.getSeconds() - birthdate.getSeconds();
+
+  if (seconds < 0) { seconds += 60; minutes -= 1; }
+  if (minutes < 0) { minutes += 60; hours -= 1; }
+  if (hours < 0) { hours += 24; days -= 1; }
+  if (days < 0) {
+    months -= 1;
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) { months += 12; years -= 1; }
+
+  ageOutput.innerHTML = `You are <span class="highlight">${years}</span> years, <span class="highlight">${months}</span> months, <span class="highlight">${days}</span> days, <span class="highlight">${hours}</span> hours, <span class="highlight">${minutes}</span> minutes, <span class="highlight">${seconds}</span> seconds old.`;
+
+  // Countdown to next birthday
+  let nextBirthday = new Date(now.getFullYear(), birthdate.getMonth(), birthdate.getDate());
+  if (nextBirthday < now) nextBirthday.setFullYear(now.getFullYear() + 1);
+
+  let diff = nextBirthday - now;
+  let diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+  let diffHours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  let diffSeconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  nextBirthdayOutput.innerHTML = `Next birthday in <span class="highlight">${diffDays}</span> days, <span class="highlight">${diffHours}</span> hours, <span class="highlight">${diffMinutes}</span> minutes, <span class="highlight">${diffSeconds}</span> seconds.`;
+}
+
+  // Wait for animation to finish then show main app
+const splash = document.getElementById('splash');
+const app = document.getElementById('app');
+
+splash.addEventListener('animationend', () => {
+  splash.style.display = 'none';
+  app.style.display = 'block';
+});
+
+</script>
+</body>
+</html>
