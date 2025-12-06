@@ -182,16 +182,15 @@ const label = document.getElementById("floating-label");
 
 birthdateInput.max = new Date().toISOString().split("T")[0];
 
-let timer;
-
 /* Splash Screen → App */
 splash.addEventListener("animationend", () => {
   splash.style.display = "none";
   app.style.display = "block";
 });
 
-birthInput.addEventListener("input", () => {
-  if (birthInput.value) {
+/* Floating Label Fix */
+birthdateInput.addEventListener("input", () => {
+  if (birthdateInput.value) {
     label.style.top = "6px";
     label.style.fontSize = "0.75rem";
     label.style.color = "#ffd700";
@@ -204,6 +203,7 @@ birthInput.addEventListener("input", () => {
   }
 });
 
+/* Age Calculation */
 function updateAge() {
   const birthdate = new Date(birthdateInput.value);
   const now = new Date();
@@ -240,7 +240,6 @@ function updateAge() {
     <span class="highlight">${seconds}</span> seconds old.
   `;
 
-  // Countdown
   let nextBirthday = new Date(now.getFullYear(), birthdate.getMonth(), birthdate.getDate());
   if (nextBirthday < now) nextBirthday.setFullYear(now.getFullYear() + 1);
 
@@ -259,6 +258,9 @@ function updateAge() {
   `;
 }
 
+/* Live Update Every Second */
+setInterval(updateAge, 1000);
+
 /* Service Worker */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -269,9 +271,9 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-
 </body>
 </html>
+
 
 
 
