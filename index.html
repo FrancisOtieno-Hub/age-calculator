@@ -113,6 +113,42 @@
     .calculator { padding: 30px 25px; }
     h1 { font-size: 1.5rem; }
   }
+
+ .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+#birthdate {
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: none;
+  font-size: 16px;
+}
+
+#floating-label {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.7);
+  pointer-events: none;
+  transition: all 0.25s ease;
+  font-size: 1rem;
+}
+
+/* When input is focused or has a value → shrink + move label */
+#birthdate:focus + #floating-label,
+#birthdate:not(:placeholder-shown) + #floating-label {
+  top: 6px;
+  transform: translateY(0);
+  font-size: 0.75rem;
+  color: #ffd700;
+}
+ 
 </style>
 </head>
 <body>
@@ -126,7 +162,10 @@
 <div id="app">
   <div class="calculator">
     <h1>Age & Birthday Countdown</h1>
-    <input type="date" id="birthdate">
+    <div class="input-wrapper">
+  <input type="date" id="birthdate">
+  <label for="birthdate" id="floating-label">Select your birthdate</label>
+  </div>
     <p id="age"></p>
     <p id="nextBirthday"></p>
   </div>
@@ -139,6 +178,7 @@ const ageOutput = document.getElementById("age");
 const nextBirthdayOutput = document.getElementById("nextBirthday");
 const splash = document.getElementById("splash");
 const app = document.getElementById("app");
+const label = document.getElementById("floating-label");
 
 birthdateInput.max = new Date().toISOString().split("T")[0];
 
@@ -150,11 +190,18 @@ splash.addEventListener("animationend", () => {
   app.style.display = "block";
 });
 
-/* Age + Countdown */
-birthdateInput.addEventListener("input", () => {
-  if (timer) clearInterval(timer);
-  updateAge();
-  timer = setInterval(updateAge, 1000);
+birthInput.addEventListener("input", () => {
+  if (birthInput.value) {
+    label.style.top = "6px";
+    label.style.fontSize = "0.75rem";
+    label.style.color = "#ffd700";
+    label.style.transform = "translateY(0)";
+  } else {
+    label.style.top = "50%";
+    label.style.fontSize = "1rem";
+    label.style.color = "rgba(255,255,255,0.7)";
+    label.style.transform = "translateY(-50%)";
+  }
 });
 
 function updateAge() {
@@ -225,6 +272,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
