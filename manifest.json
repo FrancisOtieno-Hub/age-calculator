@@ -14,11 +14,12 @@
   "icons": [
     {
       "src": "icon.png",
-      "sizes": "733x735",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
+
 
 
 
