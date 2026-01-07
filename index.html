@@ -1,296 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Age & Birthday Countdown</title>
-<link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <title>Age & Birthday Countdown</title>
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: #fff;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0B8457" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  /* Splash Screen */
-  #splash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 9999;
-    opacity: 1;
-    animation: fadeOut 1.2s ease forwards;
-    animation-delay: 2.5s;
-  }
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-  #splash img {
-    width: 120px;
-    height: 120px;
-    border-radius: 25%;
-    object-fit: cover;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  @keyframes fadeOut {
-    to { opacity: 0; visibility: hidden; }
-  }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0B8457, #B4E1C1);
+      color: #083A2B;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  /* Main App */
-  #app {
-    display: none;
-    width: 100%;
-    max-width: 450px;
-  }
+    /* Splash */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0B8457, #B4E1C1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeOut 1.2s ease forwards;
+      animation-delay: 2.2s;
+    }
 
-  .calculator {
-    background: rgba(255,255,255,0.1);
-    padding: 40px 50px;
-    border-radius: 20px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    text-align: center;
-    transition: transform .3s ease;
-  }
+    #splash img {
+      width: 120px;
+      height: 120px;
+      border-radius: 25%;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    }
 
-  .calculator:hover {
-    transform: translateY(-5px);
-  }
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
 
-  h1 {
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    font-weight: 600;
-  }
+    /* App */
+    #app {
+      display: none;
+      width: 100%;
+      max-width: 450px;
+      padding: 20px;
+    }
 
-  input[type="date"] {
-    width: 100%;
-    padding: 15px 20px;
-    border-radius: 12px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    margin-bottom: 25px;
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-  }
+    .calculator {
+      background: rgba(255,255,255,0.88);
+      padding: 40px;
+      border-radius: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      text-align: center;
+    }
 
-  input[type="date"]:focus {
-    background: rgba(255,255,255,0.3);
-  }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+      color: #0B8457;
+    }
 
-  p {
-    margin-top: 15px;
-    line-height: 1.6;
-    font-size: 1rem;
-  }
+    /* Floating input */
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 25px;
+    }
 
-  .highlight {
-    color: #ffd700;
-    font-weight: 600;
-  }
+    input[type="date"] {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 14px;
+      border: none;
+      background: #F4FBF8;
+      color: #083A2B;
+      font-size: 16px;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(11,132,87,0.25);
+    }
 
-  @media (max-width: 480px) {
-    .calculator { padding: 30px 25px; }
-    h1 { font-size: 1.5rem; }
-  }
+    label {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5A8F7B;
+      pointer-events: none;
+      transition: 0.25s ease;
+    }
 
- .input-wrapper {
-  position: relative;
-  width: 100%;
-}
+    input:focus + label,
+    input:not(:placeholder-shown) + label {
+      top: 6px;
+      font-size: 0.75rem;
+      color: #0B8457;
+    }
 
-#birthdate {
-  width: 100%;
-  padding: 18px 20px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  border: none;
-  font-size: 16px;
-}
+    p {
+      margin-top: 20px;
+      line-height: 1.8;
+      font-size: 1.05rem;
+      color: #083A2B;
+    }
 
-#floating-label {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(255,255,255,0.7);
-  pointer-events: none;
-  transition: all 0.25s ease;
-  font-size: 1rem;
-}
+    .highlight {
+      color: #FFD166;
+      font-weight: 600;
+    }
 
-/* When input is focused or has a value → shrink + move label */
-#birthdate:focus + #floating-label,
-#birthdate:not(:placeholder-shown) + #floating-label {
-  top: 6px;
-  transform: translateY(0);
-  font-size: 0.75rem;
-  color: #ffd700;
-}
+    footer {
+      position: fixed;
+      bottom: 12px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.75;
+      color: #083A2B;
+    }
 
- 
-  /* Footer */
-#footer {
-  position: fixed;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #444;
-  opacity: 0.8;
-}
-</style>
+    @media (max-width: 480px) {
+      .calculator {
+        padding: 30px 24px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Splash -->
-<div id="splash">
-  <img src="icon.png" alt="App Icon">
-</div>
-
-<!-- App -->
-<div id="app">
-  <div class="calculator">
-    <h1>Age & Birthday Countdown</h1>
-    <div class="input-wrapper">
-  <input type="date" id="birthdate">
-  <label for="birthdate" id="floating-label">Select your birthdate</label>
+  <!-- Splash -->
+  <div id="splash">
+    <img src="icon.png" alt="App Icon">
   </div>
-    <p id="age"></p>
-    <p id="nextBirthday"></p>
+
+  <!-- App -->
+  <div id="app">
+    <div class="calculator">
+      <h1>Age & Birthday Countdown</h1>
+
+      <div class="input-wrapper">
+        <input type="date" id="birthdate" placeholder=" " />
+        <label for="birthdate">Select your birthdate</label>
+      </div>
+
+      <p id="age"></p>
+      <p id="nextBirthday"></p>
+    </div>
   </div>
-</div>
 
-<script>
-/* DOM Elements */
-const birthdateInput = document.getElementById("birthdate");
-const ageOutput = document.getElementById("age");
-const nextBirthdayOutput = document.getElementById("nextBirthday");
-const splash = document.getElementById("splash");
-const app = document.getElementById("app");
-const label = document.getElementById("floating-label");
+  <footer>© Francis Otieno</footer>
 
-birthdateInput.max = new Date().toISOString().split("T")[0];
+  <script>
+    const birthdateInput = document.getElementById("birthdate");
+    const ageOutput = document.getElementById("age");
+    const nextBirthdayOutput = document.getElementById("nextBirthday");
+    const splash = document.getElementById("splash");
+    const app = document.getElementById("app");
 
-/* Splash Screen → App */
-splash.addEventListener("animationend", () => {
-  splash.style.display = "none";
-  app.style.display = "block";
-});
+    birthdateInput.max = new Date().toISOString().split("T")[0];
 
-/* Floating Label Fix */
-birthdateInput.addEventListener("input", () => {
-  if (birthdateInput.value) {
-    label.style.top = "6px";
-    label.style.fontSize = "0.75rem";
-    label.style.color = "#ffd700";
-    label.style.transform = "translateY(0)";
-  } else {
-    label.style.top = "50%";
-    label.style.fontSize = "1rem";
-    label.style.color = "rgba(255,255,255,0.7)";
-    label.style.transform = "translateY(-50%)";
-  }
-});
+    /* Splash once per session */
+    if (sessionStorage.getItem("seenSplash")) {
+      splash.style.display = "none";
+      app.style.display = "block";
+    } else {
+      sessionStorage.setItem("seenSplash", "true");
+      splash.addEventListener("animationend", () => {
+        splash.style.display = "none";
+        app.style.display = "block";
+      });
+    }
 
-/* Age Calculation */
-function updateAge() {
-  const birthdate = new Date(birthdateInput.value);
-  const now = new Date();
+    let timer = null;
 
-  if (!birthdateInput.value) {
-    ageOutput.textContent = "";
-    nextBirthdayOutput.textContent = "";
-    return;
-  }
+    function updateAge() {
+      if (!birthdateInput.value) return;
 
-  let years = now.getFullYear() - birthdate.getFullYear();
-  let months = now.getMonth() - birthdate.getMonth();
-  let days = now.getDate() - birthdate.getDate();
-  let hours = now.getHours() - birthdate.getHours();
-  let minutes = now.getMinutes() - birthdate.getMinutes();
-  let seconds = now.getSeconds() - birthdate.getSeconds();
+      const birth = new Date(birthdateInput.value + "T00:00:00");
+      const now = new Date();
 
-  if (seconds < 0) { seconds += 60; minutes--; }
-  if (minutes < 0) { minutes += 60; hours--; }
-  if (hours < 0) { hours += 24; days--; }
-  if (days < 0) {
-    months--;
-    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-  }
-  if (months < 0) { months += 12; years--; }
+      let years = now.getFullYear() - birth.getFullYear();
+      const thisYearBirthday = new Date(now.getFullYear(), birth.getMonth(), birth.getDate());
+      if (now < thisYearBirthday) years--;
 
-  ageOutput.innerHTML = `
-    You are 
-    <span class="highlight">${years}</span> years, 
-    <span class="highlight">${months}</span> months, 
-    <span class="highlight">${days}</span> days, 
-    <span class="highlight">${hours}</span> hours, 
-    <span class="highlight">${minutes}</span> minutes, 
-    <span class="highlight">${seconds}</span> seconds old.
-  `;
+      const lastBirthday = new Date(birth.getFullYear() + years, birth.getMonth(), birth.getDate());
+      const diff = now - lastBirthday;
 
-  let nextBirthday = new Date(now.getFullYear(), birthdate.getMonth(), birthdate.getDate());
-  if (nextBirthday < now) nextBirthday.setFullYear(now.getFullYear() + 1);
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
 
-  let diff = nextBirthday - now;
-  let diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-  let diffHours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  let diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  let diffSeconds = Math.floor((diff % (1000 * 60)) / 1000);
+      ageOutput.innerHTML = `
+        You are 
+        <span class="highlight">${years}</span> years, 
+        <span class="highlight">${days}</span> days, 
+        <span class="highlight">${hours}</span> hours, 
+        <span class="highlight">${minutes}</span> minutes, 
+        <span class="highlight">${seconds}</span> seconds old.
+      `;
 
-  nextBirthdayOutput.innerHTML = `
-    Next birthday in 
-    <span class="highlight">${diffDays}</span> days, 
-    <span class="highlight">${diffHours}</span> hours, 
-    <span class="highlight">${diffMinutes}</span> minutes, 
-    <span class="highlight">${diffSeconds}</span> seconds.
-  `;
-}
+      let nextBirthday = new Date(now.getFullYear(), birth.getMonth(), birth.getDate());
+      if (nextBirthday <= now) nextBirthday.setFullYear(now.getFullYear() + 1);
 
-/* Live Update Every Second */
-setInterval(updateAge, 1000);
+      const until = nextBirthday - now;
 
-/* Service Worker */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then(reg => console.log("Service Worker registered:", reg))
-      .catch(err => console.log("SW registration failed:", err));
-  });
-}
-</script>
-  <footer id="footer">
-  © Francis Otieno
-</footer>
+      nextBirthdayOutput.innerHTML = `
+        Next birthday in 
+        <span class="highlight">${Math.floor(until / 86400000)}</span> days, 
+        <span class="highlight">${Math.floor((until % 86400000) / 3600000)}</span> hours, 
+        <span class="highlight">${Math.floor((until % 3600000) / 60000)}</span> minutes, 
+        <span class="highlight">${Math.floor((until % 60000) / 1000)}</span> seconds.
+      `;
+    }
+
+    birthdateInput.addEventListener("change", () => {
+      if (navigator.vibrate) navigator.vibrate(30);
+      if (timer) clearInterval(timer);
+      updateAge();
+      timer = setInterval(updateAge, 1000);
+    });
+
+    /* Service Worker */
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js");
+      });
+    }
+  </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
