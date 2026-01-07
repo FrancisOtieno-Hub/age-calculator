@@ -1,27 +1,26 @@
 {
   "name": "Age & Birthday Countdown",
   "short_name": "Age App",
-  "description": "A beautiful, minimal PWA that calculates your age with live updates and counts down to your next birthday.",
-  
+  "description": "A beautiful, minimal PWA that calculates your age in real time and counts down to your next birthday — even offline.",
+
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  
-  "background_color": "#667eea",
-  "theme_color": "#764ba2",
+
+  "background_color": "#B4E1C1",
+  "theme_color": "#0B8457",
+
+  "lang": "en",
+  "categories": ["lifestyle", "utilities"],
+  "prefer_related_applications": false,
 
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
-
-
-
-
-
-
