@@ -1,69 +1,78 @@
-// Name of the cache
-const CACHE_NAME = "age-app-v1";
+/* ================================
+   Age & Birthday Countdown PWA
+   Service Worker
+   ================================ */
 
-// Files to cache
-const ASSETS = [
+const CACHE_NAME = "age-app-v2";
+const STATIC_ASSETS = [
   "/",
   "/index.html",
-  "/service-worker.js",
   "/manifest.json",
-  "/icon.png",
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+  "/icon.png"
 ];
 
-// Install Service Worker
-self.addEventListener("install", (event) => {
+/* ---------- INSTALL ---------- */
+self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
-// Activate Service Worker
-self.addEventListener("activate", (event) => {
+/* ---------- ACTIVATE ---------- */
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
+    caches.keys().then(keys =>
+      Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      );
-    })
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
   );
   self.clients.claim();
 });
 
-// Fetch event (Cache-first strategy)
-self.addEventListener("fetch", (event) => {
+/* ---------- FETCH ---------- */
+self.addEventListener("fetch", event => {
+  const { request } = event;
+
+  // Ignore non-GET requests
+  if (request.method !== "GET") return;
+
+  // Google Fonts → network first, then cache
+  if (request.url.includes("fonts.googleapis.com") ||
+      request.url.includes("fonts.gstatic.com")) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // App shell → cache first
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return (
-        cachedResponse ||
-        fetch(event.request)
-          .then((response) => {
-            // Cache fetched files dynamically only if they come from your domain
-            if (
-              event.request.url.startsWith(self.location.origin) &&
-              response.status === 200 &&
-              response.type === "basic"
-            ) {
-              const cloned = response.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, cloned);
-              });
-            }
-            return response;
-          })
-          .catch(() => {
-            // OPTIONALLY serve fallback content offline
-            return caches.match("/index.html");
-          })
-      );
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(request)
+        .then(response => {
+          if (
+            response &&
+            response.status === 200 &&
+            response.type === "basic"
+          ) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match("/index.html"));
     })
   );
 });
-
-
-
